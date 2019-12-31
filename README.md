@@ -6,9 +6,9 @@ Intention is to:
     * Display the shouldas on a web page
 
 ### Build
-`clean install -Daws.access.key=... -Daws.secret.key=...`
+`mvn clean install -Daws.access.key=... -Daws.secret.key=...`
 
 ### Run
 
-`AWS_ACCESS_KEY=... AWS_SECRET_KEY=... mvn spring-boot:run ???`
+`AWS_ACCESS_KEY=... AWS_SECRET_KEY=... mvn spring-boot:run`
 

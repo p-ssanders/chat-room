@@ -9,10 +9,9 @@
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
     <groupId>dev.samsanders.shouda</groupId>
-    <artifactId>shoulda-server</artifactId>
+    <artifactId>shoulda</artifactId>
     <version>0.0.1-SNAPSHOT</version>
     <name>shoulda-server</name>
-    <description>Demo project for Spring Boot</description>
 
     <properties>
         <java.version>1.8</java.version>
