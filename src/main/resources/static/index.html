@@ -1,11 +1,28 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Reactive WebSockets Example</title>
-</head>
-<body onload="openWebSocket()">
-<textarea id="result" style="min-height: 200px; min-width: 400px"></textarea>
-<script type="text/javascript" src="app.js"></script>
-</body>
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+        <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+        <link rel="stylesheet" type="text/css" href="styles.css">
+        <title>Shoulda</title>
+    </head>
+
+    <body onload="openWebSocket()">
+        <div class="header">
+            <h1>shoulda</h1>
+        </div>
+
+        <div id="shouldas" class="shouldas">
+        </div>
+
+        <div class="footer">
+            <div class="spacer"></div>
+            <div class="input">
+                <span>I should have</span>
+                <span><input type="text"><input type="button" value="Cast"></span>
+            </div>
+        </div>
+
+        <script type="text/javascript" src="app.js"></script>
+    </body>
 </html>

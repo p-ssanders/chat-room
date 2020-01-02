@@ -1,12 +1,15 @@
 function openWebSocket() {
     var webSocket = new WebSocket("ws://localhost:8080/ws/shouldas");
 
-    webSocket.onopen = function() { logMessage("Opened the Websocket Connection!");};
-
-    webSocket.onmessage = function(event) { logMessage("Result: " + event.data); }
+    webSocket.onmessage = function(event) { newShoulda(event.data); }
 }
 
-function logMessage(msg) {
-    document.getElementById("result").appendChild(document.createTextNode(msg + "\n"));
+function newShoulda(text) {
+    var node = document.createElement("div");
+    node.className = "shoulda";
+    var textnode = document.createTextNode(text);
+    node.append(textnode);
+
+    document.getElementById("shouldas").appendChild(node);
 }
 

@@ -36,8 +36,6 @@ import software.amazon.awssdk.services.kinesis.KinesisAsyncClientBuilder;
 import software.amazon.kinesis.common.ConfigsBuilder;
 import software.amazon.kinesis.common.KinesisClientUtil;
 import software.amazon.kinesis.coordinator.Scheduler;
-import software.amazon.kinesis.processor.ShardRecordProcessor;
-import software.amazon.kinesis.processor.ShardRecordProcessorFactory;
 
 import java.util.HashMap;
 import java.util.Map;

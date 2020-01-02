@@ -17,12 +17,18 @@ public class ShouldaRecordProcessor implements ShardRecordProcessor {
 
     @Override
     public void initialize(InitializationInput initializationInput) {
-        log.info("intialize!");
+        log.info("initialize!");
     }
 
     @Override
     public void processRecords(ProcessRecordsInput processRecordsInput) {
-        unicastProcessor.onNext(new Shoulda("wut"));
+        processRecordsInput.records().forEach(kinesisClientRecord -> {
+            byte[] arr = new byte[kinesisClientRecord.data().remaining()];
+            kinesisClientRecord.data().get(arr);
+            String text = new String(arr);
+
+            unicastProcessor.onNext(new Shoulda(text));
+        });
     }
 
     @Override
