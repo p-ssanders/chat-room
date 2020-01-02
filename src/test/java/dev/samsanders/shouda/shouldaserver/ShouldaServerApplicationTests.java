@@ -57,7 +57,7 @@ class ShouldaServerApplicationTests {
     void read() throws URISyntaxException {
         WebSocketClient client = new ReactorNettyWebSocketClient();
 
-        URI url = new URI(String.format("ws://localhost:%d/sockets/shouldas", port));
+        URI url = new URI(String.format("ws://localhost:%d/ws/shouldas", port));
         client.execute(url, session ->
                 session.receive()
                         .doOnNext(webSocketMessage -> {
