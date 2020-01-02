@@ -1,16 +1,16 @@
-package dev.samsanders.shouda.shouldaserver.app;
+package dev.samsanders.poc.chatroom.app;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import java.util.Objects;
 
-public class Shoulda {
+public class ChatMessage {
 
     private final String text;
 
     @JsonCreator
-    public Shoulda(@JsonProperty("text") String text) {
+    public ChatMessage(@JsonProperty("text") String text) {
         this.text = text;
     }
 
@@ -22,8 +22,8 @@ public class Shoulda {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        Shoulda shoulda = (Shoulda) o;
-        return Objects.equals(text, shoulda.text);
+        ChatMessage chatMessage = (ChatMessage) o;
+        return Objects.equals(text, chatMessage.text);
     }
 
     @Override
@@ -34,7 +34,7 @@ public class Shoulda {
 
     @Override
     public String toString() {
-        return "Shoulda{" +
+        return "Message{" +
                 "text='" + text + '\'' +
                 '}';
     }

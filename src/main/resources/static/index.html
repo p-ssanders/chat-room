@@ -4,22 +4,25 @@
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
         <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
         <link rel="stylesheet" type="text/css" href="styles.css">
-        <title>Shoulda</title>
+        <title>chat-room</title>
     </head>
 
     <body onload="openWebSocket()">
         <div class="header">
-            <h1>shoulda</h1>
+            <h1>chat room</h1>
         </div>
 
-        <div id="shouldas" class="shouldas">
+        <div id="messages" class="messages">
         </div>
 
         <div class="footer">
             <div class="spacer"></div>
-            <div class="input">
-                <span>I should have</span>
-                <span><input type="text"><input type="button" value="Cast"></span>
+            <div class="textarea">
+                <textarea id="messageText"></textarea>
+            </div>
+            <div class="button">
+                <input type="button" value="send" onclick="sendMessage()">
+            </div>
             </div>
         </div>
 

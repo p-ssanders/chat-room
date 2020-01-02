@@ -1,4 +1,4 @@
-package dev.samsanders.shouda.shouldaserver.app;
+package dev.samsanders.poc.chatroom.app;
 
 import com.amazonaws.services.kinesis.producer.KinesisProducer;
 import reactor.core.publisher.Mono;
@@ -17,9 +17,10 @@ public class KinesisGateway {
         this.streamName = streamName;
     }
 
-    public Mono<Void> putRecord(Mono<Shoulda> shouldaMono) {
+    public Mono<Void> putRecord(Mono<ChatMessage> shouldaMono) {
         return shouldaMono.doOnSuccess(shoulda -> {
             try {
+                // TODO should persist as JSON, not just the getText()
                 ByteBuffer wrap = ByteBuffer.wrap(shoulda.getText().getBytes("UTF-8"));
                 kinesisProducer.addUserRecord(streamName, PARTITION_KEY, wrap);
             } catch (UnsupportedEncodingException e) {

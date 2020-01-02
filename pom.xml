@@ -8,10 +8,9 @@
         <version>2.2.2.RELEASE</version>
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
-    <groupId>dev.samsanders.shouda</groupId>
-    <artifactId>shoulda</artifactId>
+    <groupId>dev.samsanders.poc</groupId>
+    <artifactId>chat-room</artifactId>
     <version>0.0.1-SNAPSHOT</version>
-    <name>shoulda-server</name>
 
     <properties>
         <java.version>1.8</java.version>
@@ -23,6 +22,10 @@
             <artifactId>spring-boot-starter-webflux</artifactId>
         </dependency>
         <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-messaging</artifactId>
+        </dependency>
+        <dependency>
             <groupId>com.amazonaws</groupId>
             <artifactId>amazon-kinesis-producer</artifactId>
             <version>0.14.0</version>
@@ -31,10 +34,6 @@
             <groupId>software.amazon.kinesis</groupId>
             <artifactId>amazon-kinesis-client</artifactId>
             <version>2.2.7</version>
-        </dependency>
-        <dependency>
-            <groupId>org.springframework</groupId>
-            <artifactId>spring-messaging</artifactId>
         </dependency>
 
         <dependency>
