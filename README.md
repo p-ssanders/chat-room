@@ -1,6 +1,6 @@
 #   chat-room
 
-Proof-of-concept that demonstrates a full-stack streaming architecture by implementing a single chat room.
+Proof-of-concept that demonstrates a full-stack streaming architecture by implementing a simple chat room.
 
 ### Built With
 
@@ -13,7 +13,9 @@ Proof-of-concept that demonstrates a full-stack streaming architecture by implem
 `mvn clean install`
 
 ### Run
-`AWS_ACCESS_KEY=... AWS_SECRET_KEY=... mvn spring-boot:run`
+* Create an Amazon Kinesis Data Stream called `messages`
+* Create a user with access to Kinesis, CloudWatch, and DynamoDB
+* Run: `AWS_ACCESS_KEY=... AWS_SECRET_KEY=... mvn spring-boot:run`
 
 ### How It Works
 

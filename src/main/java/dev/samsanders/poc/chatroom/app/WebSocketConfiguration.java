@@ -11,12 +11,15 @@ import reactor.core.publisher.Flux;
 import reactor.core.publisher.UnicastProcessor;
 import software.amazon.awssdk.auth.credentials.AwsBasicCredentials;
 import software.amazon.awssdk.auth.credentials.StaticCredentialsProvider;
+import software.amazon.awssdk.core.client.config.ClientAsyncConfiguration;
 import software.amazon.awssdk.regions.Region;
 import software.amazon.awssdk.services.cloudwatch.CloudWatchAsyncClient;
 import software.amazon.awssdk.services.dynamodb.DynamoDbAsyncClient;
 import software.amazon.awssdk.services.kinesis.KinesisAsyncClient;
 import software.amazon.awssdk.services.kinesis.KinesisAsyncClientBuilder;
 import software.amazon.kinesis.common.ConfigsBuilder;
+import software.amazon.kinesis.common.InitialPositionInStream;
+import software.amazon.kinesis.common.InitialPositionInStreamExtended;
 import software.amazon.kinesis.common.KinesisClientUtil;
 import software.amazon.kinesis.coordinator.Scheduler;
 
@@ -49,8 +52,9 @@ public class WebSocketConfiguration {
     }
 
     @Bean
-    public Flux<ChatMessage> chatMessageStream(UnicastProcessor<ChatMessage> unicastProcessor) {
-        return unicastProcessor.replay(10).autoConnect();
+    public Flux<ChatMessage> chatMessageStream(UnicastProcessor<ChatMessage> unicastProcessor,
+                                               @Value("${app.cache.size}") int cacheSizeInNumberOfMessages) {
+        return unicastProcessor.replay(cacheSizeInNumberOfMessages).autoConnect();
     }
 
     @Bean
@@ -79,7 +83,9 @@ public class WebSocketConfiguration {
                 configsBuilder.lifecycleConfig(),
                 configsBuilder.metricsConfig(),
                 configsBuilder.processorConfig(),
-                configsBuilder.retrievalConfig()
+                configsBuilder.retrievalConfig().initialPositionInStreamExtended(
+                        InitialPositionInStreamExtended.newInitialPosition(InitialPositionInStream.TRIM_HORIZON)
+                )
         );
 
         return scheduler;
