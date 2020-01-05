@@ -1,7 +1,11 @@
 package dev.samsanders.poc.chatroom.app;
 
 import reactor.core.publisher.UnicastProcessor;
-import software.amazon.kinesis.lifecycle.events.*;
+import software.amazon.kinesis.lifecycle.events.InitializationInput;
+import software.amazon.kinesis.lifecycle.events.LeaseLostInput;
+import software.amazon.kinesis.lifecycle.events.ProcessRecordsInput;
+import software.amazon.kinesis.lifecycle.events.ShardEndedInput;
+import software.amazon.kinesis.lifecycle.events.ShutdownRequestedInput;
 import software.amazon.kinesis.processor.ShardRecordProcessor;
 
 public class ChatMessageRecordProcessor implements ShardRecordProcessor {

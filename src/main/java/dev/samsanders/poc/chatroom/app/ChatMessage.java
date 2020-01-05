@@ -2,7 +2,6 @@ package dev.samsanders.poc.chatroom.app;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
-
 import java.util.Objects;
 
 public class ChatMessage {

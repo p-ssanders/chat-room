@@ -1,5 +1,8 @@
 package dev.samsanders.poc.chatroom.app;
 
+import java.util.HashMap;
+import java.util.Map;
+import java.util.UUID;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -11,7 +14,6 @@ import reactor.core.publisher.Flux;
 import reactor.core.publisher.UnicastProcessor;
 import software.amazon.awssdk.auth.credentials.AwsBasicCredentials;
 import software.amazon.awssdk.auth.credentials.StaticCredentialsProvider;
-import software.amazon.awssdk.core.client.config.ClientAsyncConfiguration;
 import software.amazon.awssdk.regions.Region;
 import software.amazon.awssdk.services.cloudwatch.CloudWatchAsyncClient;
 import software.amazon.awssdk.services.dynamodb.DynamoDbAsyncClient;
@@ -22,10 +24,6 @@ import software.amazon.kinesis.common.InitialPositionInStream;
 import software.amazon.kinesis.common.InitialPositionInStreamExtended;
 import software.amazon.kinesis.common.KinesisClientUtil;
 import software.amazon.kinesis.coordinator.Scheduler;
-
-import java.util.HashMap;
-import java.util.Map;
-import java.util.UUID;
 
 @Configuration
 public class WebSocketConfiguration {
@@ -53,8 +51,8 @@ public class WebSocketConfiguration {
 
     @Bean
     public Flux<ChatMessage> chatMessageStream(UnicastProcessor<ChatMessage> unicastProcessor,
-                                               @Value("${app.cache.size}") int cacheSizeInNumberOfMessages) {
-        return unicastProcessor.replay(cacheSizeInNumberOfMessages).autoConnect();
+                                               @Value("${app.buffer.size}") int bufferSizeInNumberOfMessages) {
+        return unicastProcessor.replay(bufferSizeInNumberOfMessages).autoConnect();
     }
 
     @Bean

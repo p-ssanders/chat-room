@@ -7,7 +7,6 @@ import com.amazonaws.services.kinesis.producer.KinesisProducerConfiguration;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Profile;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.http.MediaType;
 import org.springframework.web.reactive.function.BodyInserters;
@@ -15,7 +14,6 @@ import org.springframework.web.reactive.function.server.RequestPredicates;
 import org.springframework.web.reactive.function.server.RouterFunction;
 import org.springframework.web.reactive.function.server.RouterFunctions;
 import org.springframework.web.reactive.function.server.ServerResponse;
-import reactor.core.publisher.Mono;
 
 @Configuration
 public class ReactiveConfiguration {
@@ -38,22 +36,9 @@ public class ReactiveConfiguration {
     }
 
     @Bean
-    @Profile("!test")
     public KinesisGateway kinesisGateway(KinesisProducer kinesisProducer,
                                          @Value("${app.stream.name}") String streamName) {
         return new KinesisGateway(kinesisProducer, streamName);
-    }
-
-    @Bean("kinesisGateway")
-    @Profile("test")
-    public KinesisGateway testKinesisGateway() {
-        return new KinesisGateway(null, null) {
-
-            @Override
-            public Mono<Void> putRecord(Mono<ChatMessage> shouldaMono) {
-                return Mono.empty();
-            }
-        };
     }
 
     @Bean
