@@ -1,11 +1,14 @@
 package dev.samsanders.poc.chatroom;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.fail;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import com.amazonaws.services.kinesis.producer.KinesisProducer;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import dev.samsanders.poc.chatroom.app.ChatMessage;
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -54,7 +57,7 @@ class ChatRoomApplicationTests {
     KinesisProducer kinesisProducer;
 
     @Test
-    void integration() throws URISyntaxException, InterruptedException {
+    void integration() throws URISyntaxException, JsonProcessingException {
         // Setup to skip persisting data in Amazon Kinesis and instead directly to the UnicastProcessor
         when(kinesisProducer.addUserRecord(any(), any(), any())).then(invocationOnMock -> {
             ByteBuffer actualByteBuffer = invocationOnMock.getArgument(2);
@@ -77,7 +80,8 @@ class ChatRoomApplicationTests {
             .isAccepted();
 
         // Also expect the KinesisProducer to be invoked with the correct message data
-        ByteBuffer expected = ByteBuffer.wrap("some-text".getBytes(StandardCharsets.UTF_8));
+        String expectedChatMessageJson = new ObjectMapper().writeValueAsString(new ChatMessage("some-text"));
+        ByteBuffer expected = ByteBuffer.wrap(expectedChatMessageJson.getBytes(StandardCharsets.UTF_8));
         verify(kinesisProducer).addUserRecord("some-stream-name", "1", expected);
 
         // Read from WebSocket
@@ -89,8 +93,16 @@ class ChatRoomApplicationTests {
                     .receive()
                     .next()
                     .map(WebSocketMessage::getPayloadAsText)
-                    .doOnNext(actual -> {
-                        assertEquals("some-text", actual);
+                    .doOnNext(actualChatMessageJson -> {
+                        try {
+                            ChatMessage actual =
+                                new ObjectMapper().readerFor(ChatMessage.class).readValue(actualChatMessageJson);
+
+                            assertEquals(new ChatMessage("some-text"), actual);
+                        } catch (JsonProcessingException e) {
+                            e.printStackTrace();
+                            fail();
+                        }
                     })
                     .then()
             )

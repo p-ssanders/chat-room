@@ -19,22 +19,25 @@ public class ChatMessage {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        ChatMessage chatMessage = (ChatMessage) o;
-        return Objects.equals(text, chatMessage.text);
+        if (this == o) {
+            return true;
+        }
+        if (!(o instanceof ChatMessage)) {
+            return false;
+        }
+        ChatMessage that = (ChatMessage) o;
+        return Objects.equals(text, that.text);
     }
 
     @Override
     public int hashCode() {
-
         return Objects.hash(text);
     }
 
     @Override
     public String toString() {
-        return "Message{" +
-                "text='" + text + '\'' +
-                '}';
+        return "ChatMessage{" +
+            "text='" + text + '\'' +
+            '}';
     }
 }
