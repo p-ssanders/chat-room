@@ -26,14 +26,13 @@ An Amazon Kinesis `Scheduler` instance is submitted to the Spring Boot `TaskExec
 The `Scheduler` polls Kinesis, and creates instances of `ChatMessageRecordProcessor` to process new records in the
 Kinesis stream.
 
-The `ChatMessageRecordProcessor.processRecords` method parses the Kinesis record, and publishes the data to a Project
-Reactor `UnicastProcessor`.
-A `UnicastProcessor` is a kind of reactive queue.
+The `ChatMessageRecordProcessor.processRecords` method parses the Kinesis record, and publishes the data to a `UnicastProcessor`.
+A `UnicastProcessor` is a kind of reactive queue or buffer.
 
 The _same instance_ of the `UnicastProcessor` is used to create an instance of `Flux<ChatMessage>` which is injected
 into the `WebSocketSessionHandler`.
 
-Sharing the `UnicastProcessor` by creating a `Flux` from it is kind of the "trick." The `Flux` acts as an unbounded
+Sharing the `UnicastProcessor` by creating a `Flux` from it is kind of the "trick" -- the `Flux` acts as an unbounded
 stream of `ChatMessage` since a reference to the underlying `UnicastProducer` is maintained by instances of
 `ChatMessageRecordProcessor` which produce `ChatMessage` data from Amazon Kinesis Records.
 
@@ -53,7 +52,6 @@ Amazon Kinesis?
 It could, but then the application couldn't scale horizontally because it would be stateful.
 Whereas the  `UnicastProcessor` is really just a cache, Kinesis works as a datastore of streaming data, similar to how
 PostgreSQL would work for an application that managed relational data.
-
 
 ### References
 

@@ -27,9 +27,6 @@ import org.springframework.test.web.reactive.server.WebTestClient;
 import org.springframework.web.reactive.function.BodyInserters;
 import org.springframework.web.reactive.socket.WebSocketMessage;
 import org.springframework.web.reactive.socket.client.ReactorNettyWebSocketClient;
-import org.springframework.web.reactive.socket.client.WebSocketClient;
-import reactor.core.publisher.Mono;
-import reactor.core.publisher.ReplayProcessor;
 import reactor.core.publisher.UnicastProcessor;
 
 @ExtendWith(SpringExtension.class)
@@ -66,7 +63,8 @@ class ChatRoomApplicationTests {
             return null;
         });
 
-        // Send a ChatMessage via HTTP
+        // Send a message via HTTP
+        // Expect a 202 Accepted
         WebTestClient.bindToApplicationContext(applicationContext)
             .configureClient()
             .build()
@@ -78,34 +76,25 @@ class ChatRoomApplicationTests {
             .expectStatus()
             .isAccepted();
 
-        // Expect the KinesisProducer to be invoked with the correct message data
+        // Also expect the KinesisProducer to be invoked with the correct message data
         ByteBuffer expected = ByteBuffer.wrap("some-text".getBytes(StandardCharsets.UTF_8));
         verify(kinesisProducer).addUserRecord("some-stream-name", "1", expected);
 
         // Read from WebSocket
-        WebSocketClient webSocketClient = new ReactorNettyWebSocketClient();
+        // Expect to receive the one message sent by the KinesisProducer
         URI url = new URI(String.format("ws://localhost:%d/websockets/chat-messages", port));
-
-        // Expect the one message sent by the producer
-        ReplayProcessor<String> output = ReplayProcessor.create(1);
-        output.subscribe(actual -> {
-            assertEquals("some-text", actual);
-        });
-
-        webSocketClient
-            .execute(url, session -> {
-                Mono<Void> receive = session.receive()
-                    .take(1)
+        new ReactorNettyWebSocketClient()
+            .execute(url, session ->
+                session
+                    .receive()
+                    .next()
                     .map(WebSocketMessage::getPayloadAsText)
-                    .doOnNext(output::onNext)
-                    .then();
-
-                Mono<Void> close = session.close().then();
-
-                return receive.then(close);
-            })
+                    .doOnNext(actual -> {
+                        assertEquals("some-text", actual);
+                    })
+                    .then()
+            )
             .block(Duration.ofMillis(1000));
-
     }
 
 }
