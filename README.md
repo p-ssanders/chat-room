@@ -15,7 +15,8 @@ Proof-of-concept that demonstrates a full-stack streaming architecture by implem
 ### Run
 * Create an Amazon Kinesis Data Stream called `messages` in `us-west-1`
 * Create a user with full access to Kinesis, CloudWatch, and DynamoDB
-* Run: `AWS_ACCESS_KEY=... AWS_SECRET_KEY=... mvn spring-boot:run`
+* `AWS_ACCESS_KEY=... AWS_SECRET_KEY=... mvn spring-boot:run`
+* http://localhost:8080
 
 ### How It Works
 
@@ -23,7 +24,7 @@ Chat messages are sent via XHR from browser to server. A Reactive Spring `Handle
 asynchronously invokes an Amazon Kinesis `KinesisProducer` to store records in an Amazon Kinesis Stream.
 
 An Amazon Kinesis `Scheduler` instance is submitted to the Spring Boot `TaskExecutor` when the application starts.
-The `Scheduler` polls Kinesis, and creates instances of `ChatMessageRecordProcessor` to process new records in the
+The `Scheduler` polls Kinesis, and uses a factory to create instances of `ChatMessageRecordProcessor` that process new records in the
 Kinesis stream.
 
 The `ChatMessageRecordProcessor.processRecords` method parses the Kinesis record, and publishes the data to a `UnicastProcessor`.
@@ -32,12 +33,12 @@ A `UnicastProcessor` is a kind of reactive queue or buffer.
 The _same instance_ of the `UnicastProcessor` is used to create an instance of `Flux<ChatMessage>` which is injected
 into the `WebSocketSessionHandler`.
 
-Sharing the `UnicastProcessor` by creating a `Flux` from it is kind of the "trick" -- the `Flux` acts as an unbounded
-stream of `ChatMessage` since a reference to the underlying `UnicastProducer` is maintained by instances of
-`ChatMessageRecordProcessor` which produce `ChatMessage` data from Amazon Kinesis Records.
-
 The `WebSocketSessionHandler` is an instance of `WebSocketHandler` whose `handle` method sends the `Flux<ChatMessage>`
 to the client, and never completes. The WebSocket session is kept open until the client closes it.
+
+Effectively sharing the instance of `UnicastProcessor` by creating a `Flux` from it is kind of the "trick" -- the `Flux` acts as an unbounded
+stream of `ChatMessage` since a reference to the underlying `UnicastProcessor` is maintained by the factory that creates instances of
+`ChatMessageRecordProcessor`.
 
 The client side is implemented with HTML and JavaScript.
 The JavaScript makes a WebSocket connection to the server when the page loads. The JavaScript defines a
@@ -50,8 +51,8 @@ Couldn't the `HandlerFunction` just publish to the `UnicastProcessor` and obviat
 Amazon Kinesis?
 
 It could, but then the application couldn't scale horizontally because it would be stateful.
-Whereas the  `UnicastProcessor` is really just a cache, Kinesis works as a datastore of streaming data, similar to how
-PostgreSQL would work for an application that managed relational data.
+Whereas the  `UnicastProcessor` is really just a buffer, Kinesis works as a datastore of streaming data, similar to how
+PostgreSQL or Oracle would work for an application that managed relational data.
 
 ### References
 
