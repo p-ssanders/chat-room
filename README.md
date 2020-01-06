@@ -13,8 +13,8 @@ Proof-of-concept that demonstrates a full-stack streaming architecture by implem
 `mvn clean install`
 
 ### Run
-* Create an Amazon Kinesis Data Stream called `messages`
-* Create a user with access to Kinesis, CloudWatch, and DynamoDB
+* Create an Amazon Kinesis Data Stream called `messages` in `us-west-1`
+* Create a user with full access to Kinesis, CloudWatch, and DynamoDB
 * Run: `AWS_ACCESS_KEY=... AWS_SECRET_KEY=... mvn spring-boot:run`
 
 ### How It Works
