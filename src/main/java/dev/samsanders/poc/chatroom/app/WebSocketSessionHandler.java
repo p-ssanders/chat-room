@@ -17,8 +17,9 @@ public class WebSocketSessionHandler implements WebSocketHandler {
     @Override
     public Mono<Void> handle(WebSocketSession webSocketSession) {
         return webSocketSession.send(
-                chatMessageStream.map(ChatMessage::getText)
-                        .map(webSocketSession::textMessage)
+                chatMessageStream
+                    .map(ChatMessage::getText)
+                    .map(webSocketSession::textMessage)
         );
     }
 }

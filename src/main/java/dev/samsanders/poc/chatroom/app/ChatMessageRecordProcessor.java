@@ -32,7 +32,6 @@ public class ChatMessageRecordProcessor implements ShardRecordProcessor {
             } catch (JsonProcessingException e) {
                 e.printStackTrace();
             }
-
         });
     }
 
